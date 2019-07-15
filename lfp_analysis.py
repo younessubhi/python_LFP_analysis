@@ -21,7 +21,7 @@ import scipy.signal
 
 # modules for data visualisation
 import matplotlib.pyplot as plt
-import matplotlib.cm
+import matplotlib.cm as cm
 import seaborn as sns
 
 # read/write .mat data
@@ -76,5 +76,23 @@ plt.xlabel('freq (Hz)',size=15)
 plt.title('psd of lfp', size=20)
 plt.show()
 
+#### spectrogram
 
+specData = range(50000,60000)
+f, t_spec, x_spec = sp.signal.spectrogram(lfp[specData,0],fs=s_rate,window='hanning', nperseg=1000, noverlap=1000-1, mode='psd')
+fmax = 200
+
+# plot settings
+x_mesh, y_mesh = np.meshgrid(t_spec, f[f<fmax])
+plt.figure(figsize=(12,4))
+plt.subplot(2,1,1)
+plt.title('lfp spectrogram')
+plt.pcolormesh(x_mesh+t_index[specData[0]], y_mesh, np.log10(x_spec[f<fmax]), cmap=cm.jet)
+plt.ylabel('freq (Hz)')
+plt.subplot(2,1,2)
+plt.plot(t_index[specData],lfp[specData],'k')
+plt.xlabel('seconds')
+plt.ylabel('voltage')
+
+plt.show()
 
